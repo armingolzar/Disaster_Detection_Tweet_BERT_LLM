@@ -13,13 +13,13 @@ build/
 # Virtual environment
 venv/
 env/
-.env/
 .venv/
+.env/
 
 # Jupyter Notebook
 .ipynb_checkpoints/
 
-# Data files
+# Data files (ignore large CSVs, zip, tar)
 data/*.csv
 data/*.zip
 data/*.tar.gz
