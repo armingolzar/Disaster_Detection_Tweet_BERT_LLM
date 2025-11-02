@@ -5,3 +5,6 @@ BERT_MODEL_NAME = "bert-base-uncased"
 
 TRAIN_PATH = "..\\data\\train.csv"
 TEST_PATH = "..\\data\\test.csv"
+PLOT_PATH = "..\\assets\\training_plot.png"
+
+FIG_SIZE = (12, 5)
