@@ -36,7 +36,7 @@ def training_plot(history):
     plt.grid(True, linestyle="--", alpha=0.6)
 
     
-    plt.subtitle("Disaster Detection Model", fontsize=16)
+    plt.suptitle("Disaster Detection Model", fontsize=16)
     plt.savefig(config.PLOT_PATH)
     plt.close()
 
