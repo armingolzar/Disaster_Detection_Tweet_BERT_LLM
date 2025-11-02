@@ -1,13 +1,13 @@
 import tensorflow as tf 
 from transformers import AutoTokenizer
 import pandas as pd
-import config as config
+import config 
 
 def preparing_bert_datasets(train_path, test_path):
     train_data = pd.read_csv(train_path, usecols=["id", "text", "target"])
     test_data = pd.read_csv(test_path, usecols=["id", "text"])
 
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained(config.BERT_MODEL_NAME)
 
     train_tokenized = tokenizer(train_data["text"].to_list(), padding="max_length", truncation=True, max_length=config.SEN_LENGTH, return_tensors="tf")
     test_tokenized = tokenizer(test_data["text"].to_list(), padding="max_length", truncation=True, max_length=config.SEN_LENGTH, return_tensors="tf")
