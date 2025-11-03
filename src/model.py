@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras.models import Model
 from transformers import TFBertModel
-import config
+import src.config as config
 
 class Disaster_Detection_BERT_Model():
 
@@ -22,16 +22,21 @@ class Disaster_Detection_BERT_Model():
         input_masks = Input(shape=(config.SEN_LENGTH,), dtype=tf.int64, name="input_masks")
 
         bert_embedding = bert_model(input_tokens, attention_mask=input_masks) # with [1] at the end of this line we could get cls_embedding
-        cls_embedding = bert_embedding.pooler_output
+        # cls_embedding = bert_embedding.pooler_output
+        cls_embedding = bert_embedding[0][:, 0, :] # this is the raw cls embedding after multi-head-self-attention but pooler has an extra dense layer on this raw embeding
 
         drop1 = Dropout(0.1, name="drop1")(cls_embedding)
         dense1 = Dense(256, activation="relu", name="dense1")(drop1)
         drop2 = Dropout(0.1, name="drop2")(dense1)
         dense2 = Dense(128, activation="relu", name="dense2")(drop2)
         drop3 = Dropout(0.1, name="drop3")(dense2)
-        dense3 = Dense(32, activation="relu", name="dense3")(drop3)
+        dense3 = Dense(64, activation="relu", name="dense3")(drop3)
+        drop4 = Dropout(0.1, name="drop4")(dense3)
+        dense4 = Dense(32, activation="relu", name="dense4")(drop4)
+        drop5 = Dropout(0.1, name="drop5")(dense4)
+        dense5 = Dense(16, activation="relu", name="dense5")(drop5)
 
-        output = Dense(1, activation="sigmoid", name="output")(dense3)
+        output = Dense(1, activation="sigmoid", name="output")(dense5)
 
         disaster_detection_model = Model(inputs=[input_tokens, input_masks], outputs=output)
         disaster_detection_model.summary()

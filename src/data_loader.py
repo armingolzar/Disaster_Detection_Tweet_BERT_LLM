@@ -1,7 +1,7 @@
 import tensorflow as tf 
 from transformers import AutoTokenizer
 import pandas as pd
-import config 
+import src.config as config
 
 def preparing_bert_training_datasets(train_path):
 

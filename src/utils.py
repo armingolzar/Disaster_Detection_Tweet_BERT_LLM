@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import config
+import src.config as config
 
 def training_plot(history):
 

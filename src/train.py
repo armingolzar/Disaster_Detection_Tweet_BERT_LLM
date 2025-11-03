@@ -1,8 +1,8 @@
 import tensorflow as tf
-import config
-from data_loader import preparing_bert_training_datasets
-from model import Disaster_Detection_BERT_Model
-from utils import training_plot
+import src.config as config
+from src.data_loader import preparing_bert_training_datasets
+from src.model import Disaster_Detection_BERT_Model
+from src.utils import training_plot
 
 
 def main():

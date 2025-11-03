@@ -1,48 +1,84 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# ==============================
+# 📁 Project: Deep Learning / AI
+# Purpose: Ignore data & model artifacts
+# ==============================
 
-# Virtual environments
-env/
-venv/
-.venv/
-*.conda
-*.env
-*.venv/
+# ------------------------------
+# 🧠 Model Files & Checkpoints
+# ------------------------------
+models/
+saved_models/
+checkpoints/
+*.h5
+*.hdf5
+*.ckpt
+*.ckpt.*
+*.pb
+*.tflite
+*.saved_model/
+*.onnx
+*.weights
+*.pth
+*.pt
 
-# Python-specific logs
-*.log
-*.sqlite3
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints
-
-# VS Code / IDE settings
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# OS files
-Thumbs.db
-.DS_Store
-Desktop.ini
-
-
-# Dataset / large files
-/data/
+# ------------------------------
+# 📦 Data & Datasets
+# ------------------------------
+data/
+datasets/
+*.csv
+*.tsv
+*.txt
 *.zip
-*.tar.gz
+*.tar
+*.gz
 *.npz
 *.npy
-*.csv
+*.jsonl
+*.pkl
 
-# Logs / TensorBoard
-runs/
+# ------------------------------
+# 📊 Logs, Outputs, and Results
+# ------------------------------
 logs/
+tensorboard_logs/
 events.out.tfevents.*
+outputs/
+results/
+assets/
+plots/
+runs/
 
-# Mac / Windows hidden files
+# ------------------------------
+# ⚙️ Python / System Files
+# ------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# ------------------------------
+# 💻 Virtual Environments
+# ------------------------------
+venv/
+env/
+.venv/
+ENV/
+
+# ------------------------------
+# 🧾 IDE & OS Files
+# ------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
 *.swp
-*.swo
+.ipynb_checkpoints/
+
+# ------------------------------
+# 🧰 Misc
+# ------------------------------
+*.log
+*.bak
+*.tmp
