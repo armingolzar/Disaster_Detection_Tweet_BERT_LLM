@@ -1,26 +1,24 @@
 import tensorflow as tf
 from transformers import TFBertModel, BertTokenizer
-from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Input, Dropout, Dense, LayerNormalization
 from tensorflow.keras.models import Model
 import os
 from src.data_loader import preparing_bert_training_datasets
-from src.utils import training_plot
+from src.utils import custom_training_loop_plot
 import src.config as config 
 
 # --- CONFIG ---
 BERT_NAME = "bert-base-uncased"
 SEQ_LEN = 100
-BATCH_SIZE = 64
-STAGE1_EPOCHS = 3            # BERT + dense
-STAGE2_EXTRA_EPOCHS = 27     # dense-only
+BATCH_SIZE = 32
+STAGE1_EPOCHS = 4            # BERT + dense
+STAGE2_EXTRA_EPOCHS = 20     # dense-only
 TOTAL_EPOCHS = STAGE1_EPOCHS + STAGE2_EXTRA_EPOCHS
 
-LR_BERT = 2e-5
-LR_DENSE = 1e-4
+LR_BERT = 1e-4
+LR_DENSE = 1e-2
 CLIP_NORM = 1.0
 
-SAVE_PATH_MODELS = "..\\models\\bert_disaster_classifier_best_fine_tune"  # path to save best model
-SAVE_PATH_PLOTS = "..\\assets\\fine_tuning_training_curve.png"
 
 # --- Build model ---
 bert_model = TFBertModel.from_pretrained(BERT_NAME)
@@ -28,7 +26,7 @@ bert_model.trainable = True
 
 # Freeze embeddings & keep last 2 encoder layers trainable
 for i, L in enumerate(bert_model.bert.encoder.layer):
-    L.trainable = (i >= 10)
+    L.trainable = (i >= 11)
 bert_model.bert.embeddings.trainable = False
 bert_model.bert.pooler.trainable = True
 
@@ -39,15 +37,21 @@ input_masks  = Input(shape=(SEQ_LEN,), dtype=tf.int32, name="input_masks")
 bert_outputs = bert_model(input_tokens, attention_mask=input_masks)
 cls = bert_outputs[0][:, 0, :]  # CLS token
 
-x = tf.keras.layers.Dropout(0.2)(cls)
-x = tf.keras.layers.Dense(256, activation="relu", name="dense1")(x)
-x = tf.keras.layers.LayerNormalization(name="norm1")(x)
-x = tf.keras.layers.Dropout(0.2)(x)
-x = tf.keras.layers.Dense(64, activation="relu", name="dense2")(x)
-x = tf.keras.layers.LayerNormalization(name="norm2")(x)
-x = tf.keras.layers.Dropout(0.2)(x)
-x = tf.keras.layers.Dense(16, activation="relu", name="dense3")(x)
-output = tf.keras.layers.Dense(1, activation="sigmoid", name="output")(x)
+drop1 = Dropout(0.2, name="drop1")(cls)
+dense1 = Dense(256, activation="relu", name="dense1")(drop1)
+norm1 = LayerNormalization(name="norm1")(dense1)
+drop2 = Dropout(0.2, name="drop2")(norm1)
+dense2 = Dense(128, activation="relu", name="dense2")(drop2)
+norm2 = LayerNormalization(name="norm2")(dense2)
+drop3 = Dropout(0.2, name="drop3")(norm2)
+dense3 = Dense(64, activation="relu", name="dense3")(drop3)
+norm3 = LayerNormalization(name="norm3")(dense3)
+drop4 = Dropout(0.2, name="drop4")(norm3)
+dense4 = Dense(32, activation="relu", name="dense4")(drop4)
+# norm4 = LayerNormalization(name="norm4")(dense4)
+drop5 = Dropout(0.2, name="drop5")(dense4)
+# dense5 = Dense(16, activation="relu", name="dense5")(drop5)
+output = Dense(1, activation="sigmoid", name="output")(drop5)
 
 model = Model(inputs=[input_tokens, input_masks], outputs=output)
 
@@ -140,7 +144,7 @@ def train(train_dataset, val_dataset):
         # --- Save best model ---
         if val_loss.result() < best_val_loss:
             best_val_loss = val_loss.result()
-            model.save(SAVE_PATH_MODELS, save_format="tf")
+            model.save(config.MODEL_PATH, save_format="tf")
             print(f"✅ Best model saved (Stage1) with val_loss = {best_val_loss:.4f}")
 
     # --- Stage 2: freeze BERT, train dense-only ---
@@ -171,11 +175,11 @@ def train(train_dataset, val_dataset):
         # --- Save best model ---
         if val_loss.result() < best_val_loss:
             best_val_loss = val_loss.result()
-            model.save(SAVE_PATH_MODELS, save_format="tf")
+            model.save(config.MODEL_PATH, save_format="tf")
             print(f"✅ Best model saved (Stage2) with val_loss = {best_val_loss:.4f}")
 
     print("Training complete.")
-    print(f"📦 Best model stored at: {os.path.abspath(SAVE_PATH_MODELS)}")
+    print(f"📦 Best model stored at: {os.path.abspath(config.MODEL_PATH)}")
 
     history = {
         "train_loss": train_loss_history,
@@ -187,7 +191,7 @@ def train(train_dataset, val_dataset):
 
 train_dataset, val_dataset = preparing_bert_training_datasets(config.TRAIN_PATH)
 history = train(train_dataset, val_dataset)
-training_plot(history)
+custom_training_loop_plot(history)
 
 
 
