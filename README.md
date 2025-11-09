@@ -69,6 +69,28 @@ It demonstrates both *high-level fine-tuning* and *low-level custom training* of
 ```
 ---
 
+## 🧩 Installation
+
+First, clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/armingolzar/Disaster_Detection_Tweet_BERT_LLM.git
+cd Disaster_Detection_Tweet_BERT_LLM
+pip install -r requirements.txt
+```
+## 🚀 How to Run
+#### ▶️ Run Training (Feature Extraction)
+This mode uses BERT as a frozen feature extractor and trains only the top dense layers:
+```bash
+python -m src.train
+```
+#### ⚡ Run Training (Fine-Tuning with Custom Loop)
+This mode trains with differential learning rates using a custom tf.GradientTape loop:
+```bash
+python -m src.train_custom_loop
+```
+---
+
 ## 📊 Results Summary
 
 | Training Mode          | Train Acc | Val Acc | Val Loss | Description |
@@ -115,8 +137,8 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 ---
 
 ## 🔗 Links
-- **GitHub Repository:** [Disaster_Tweet_Detection_using_BERT_LLM](https://github.com/armingolzar/Disaster_Tweet_Detection_using_BERT_LLM)  
-- **Author:** [Armin Golzar](www.linkedin.com/in/armingolzar)
+- **GitHub Repository:** [Disaster_Tweet_Detection_using_BERT_LLM](https://github.com/armingolzar/Disaster_Detection_Tweet_BERT_LLM)  
+- **Author:** [Armin Golzar](https://www.linkedin.com/in/armingolzar/)
 
 ---
 
